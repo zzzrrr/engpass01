@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; form-action 'none'; base-uri 'none'">
+<title>英檢通過可能性估計｜中臺科技大學食品科技系</title>
+<style>
+:root {
+  font-family: "Noto Sans CJK TC", "Microsoft JhengHei", "PingFang TC", system-ui, sans-serif;
+  color: #162d31;
+  background: #f4f7f4;
+  --muted: #48625f;
+  --line: #d6e1db;
+  --accent: #136255;
+  --accent-dark: #104940;
+  --wash: #e7f1ec;
+  --paper: #fff;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, input { font: inherit; }
+button, a, summary { touch-action: manipulation; }
+a { color: var(--accent-dark); }
+:focus-visible { outline: 3px solid #1b7b67; outline-offset: 3px; }
+[hidden] { display: none !important; }
+.shell { width: min(1120px, calc(100% - 72px)); margin: 0 auto; }
+.masthead { border-bottom: 1px solid var(--line); }
+.masthead .shell { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; }
+.brand { font-size: 14px; font-weight: 700; }
+.site-link { font-size: 13px; text-underline-offset: .3em; text-decoration-thickness: 1px; white-space: nowrap; }
+main { padding: 39px 0 35px; }
+.intro { margin-bottom: 28px; }
+.intro p { color: var(--muted); margin: 10px 0 0; line-height: 1.65; }
+h1, h2, h3, p { margin-top: 0; }
+h1 { font-size: clamp(32px, 5vw, 52px); letter-spacing: -.035em; line-height: 1.17; margin: 0; }
+h2 { font-size: 22px; line-height: 1.25; margin-bottom: 7px; }
+h3 { margin-bottom: 7px; font-size: 15px; }
+.panel { border: 1px solid var(--line); border-radius: 16px; min-width: 0; }
+.workspace { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: stretch; }
+.entry { background: var(--paper); padding: 25px 27px; }
+.hint { font-size: 14px; color: var(--muted); margin-bottom: 20px; line-height: 1.55; }
+.score-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px 15px; }
+.field label { font-size: 14px; font-weight: 700; display: block; padding-bottom: 4px; }
+.field input {
+  width: 100%; min-height: 44px; padding: 8px 11px; color: inherit;
+  border: 1px solid #b6c7bf; border-radius: 8px; background: #fbfdfb;
+  font-variant-numeric: tabular-nums;
+}
+.field input::placeholder { color: #68807b; }
+.field input[aria-invalid="true"] { border-color: #a2452d; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; align-items: center; }
+.button { min-height: 42px; padding: 8px 12px; border: 1px solid transparent; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.primary { color: #fff; background: var(--accent); padding-inline: 16px; }
+.primary:hover { background: var(--accent-dark); }
+.secondary { background: #f1f6f2; border-color: var(--line); color: var(--accent-dark); }
+.secondary:hover { background: #e6efe8; }
+.tertiary { color: var(--muted); background: transparent; }
+.tertiary:hover { background: #eff4f1; }
+.error { color: #8a3520; margin: 12px 0 0; font-size: 14px; line-height: 1.55; }
+.result { background: var(--wash); padding: 25px 27px; }
+.result .hint { margin-bottom: 16px; }
+.value {
+  font-variant-numeric: tabular-nums; color: var(--accent-dark); font-weight: 800;
+  font-size: clamp(52px, 7.5vw, 86px); letter-spacing: -.07em; line-height: 1.02;
+}
+.value small { font-size: .43em; letter-spacing: normal; margin-inline-start: .12em; }
+.value-line { min-height: 85px; }
+.scale { margin: 20px 0 18px; }
+.track { position: relative; height: 10px; border-radius: 5px; background: #c9ded5; }
+.fill { height: 100%; width: 0; background: var(--accent); border-radius: 5px; transition: width .16s ease; }
+.marker { position: absolute; width: 2px; height: 20px; top: -5px; background: #334c44; }
+.axis { display: flex; justify-content: space-between; margin-top: 7px; font-size: 12px; color: var(--muted); }
+.reference { margin: 0; font-size: 13px; color: var(--muted); }
+.scope { border-top: 1px solid #c4d9ce; margin-top: 20px; padding-top: 13px; line-height: 1.6; font-size: 14px; }
+.scope p { margin-bottom: 6px; }
+.scope p:last-child { margin-bottom: 0; }
+.attention { color: #753e24; font-size: 13px; font-weight: 700; }
+.methods { margin-top: 18px; background: var(--paper); padding: 0 24px; }
+.methods summary { cursor: pointer; font-weight: 700; min-height: 49px; padding: 14px 0; color: var(--accent-dark); }
+.methods[open] summary { border-bottom: 1px solid var(--line); }
+.method-content { padding: 17px 0; color: var(--muted); font-size: 14px; line-height: 1.72; }
+.method-content h3 { color: #162d31; }
+.method-content p { margin-bottom: 14px; }
+.method-content p:last-child { margin-bottom: 0; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; margin: 8px 0 12px; text-align: right; }
+th, td { padding: 7px 8px; border-bottom: 1px solid var(--line); }
+thead { background: #f0f5f1; }
+th:first-child { text-align: left; }
+th { font-weight: 700; }
+.footer { color: var(--muted); margin-top: 16px; font-size: 12px; }
+@media (max-width: 760px) {
+  .shell { width: calc(100% - 36px); }
+  main { padding-top: 28px; }
+  .workspace { grid-template-columns: 1fr; gap: 13px; }
+  .entry, .result { padding: 20px; }
+  .methods { padding: 0 16px; }
+  .value-line { min-height: 58px; }
+}
+@media (max-width: 400px) {
+  .shell { width: calc(100% - 26px); }
+  .entry, .result { padding: 16px; }
+  th, td { padding-inline: 4px; }
+}
+@media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="shell">
+    <span class="brand">中臺科技大學｜食品科技系</span>
+    <a class="site-link" id="methods-link" href="#methods">模型與驗證</a>
+  </div>
+</header>
+<main class="shell">
+  <div class="intro">
+    <h1>英檢通過可能性估計</h1>
+    <p>以五科統測原始分數試算學生曾有核可英檢通過紀錄的可能性，供教學輔導參考。</p>
+  </div>
+  <div class="workspace">
+    <section class="entry panel" aria-labelledby="input-heading">
+      <h2 id="input-heading">輸入五科成績</h2>
+      <p class="hint" id="input-hint">各科以 0 至 100 分的原始分數輸入，可含小數。</p>
+      <form id="grade-form" novalidate aria-describedby="input-hint">
+        <div class="score-list">
+          <div class="field"><label for="chinese">國文</label><input id="chinese" name="chinese" type="number" min="0" max="100" step="any" inputmode="decimal" required></div>
+          <div class="field"><label for="english">英文</label><input id="english" name="english" type="number" min="0" max="100" step="any" inputmode="decimal" required></div>
+          <div class="field"><label for="math">數學</label><input id="math" name="math" type="number" min="0" max="100" step="any" inputmode="decimal" required></div>
+          <div class="field"><label for="major-one">專業科目一</label><input id="major-one" name="major-one" type="number" min="0" max="100" step="any" inputmode="decimal" required></div>
+          <div class="field"><label for="major-two">專業科目二</label><input id="major-two" name="major-two" type="number" min="0" max="100" step="any" inputmode="decimal" required></div>
+        </div>
+        <div class="actions">
+          <button type="submit" class="button primary">試算可能性</button>
+          <button type="button" class="button secondary" id="example-button">套用示例</button>
+          <button type="reset" class="button tertiary">清空</button>
+        </div>
+        <p class="error" id="input-error" role="alert" hidden></p>
+      </form>
+    </section>
+    <section class="result panel" aria-labelledby="result-heading">
+      <h2 id="result-heading">英檢通過可能性</h2>
+      <p class="hint">以有核可考試紀錄的學生為參照</p>
+      <div class="value-line" role="status" aria-live="polite" aria-atomic="true">
+        <div class="value" id="result-value" aria-label="尚未試算">—</div>
+      </div>
+      <div class="scale" aria-hidden="true">
+        <div class="track"><div class="fill" id="result-fill"></div><div class="marker" id="base-marker"></div></div>
+        <div class="axis"><span>0%</span><span>100%</span></div>
+      </div>
+      <p class="reference" id="reference"></p>
+      <div class="scope">
+        <p id="scope"></p>
+        <p id="range-note" class="attention" role="status" hidden></p>
+      </div>
+    </section>
+  </div>
+
+  <details class="methods panel" id="methods">
+    <summary>模型與驗證</summary>
+    <div class="method-content">
+      <h3>資料範圍</h3>
+      <p>以 111–114 學年度入學、未獲豁免、有核可考試紀錄，且具五科統測原始分數的學生建模。結果定義為歷史名冊中曾有核可通過紀錄。各屆觀察時間可能不同，本估計未設定固定的通過期限。</p>
+      <h3>模型</h3>
+      <p>將五科分數標準化，取前兩個主成分（PCA），再以 L2 正則化邏輯斯迴歸估計。網頁以各科成績和模型參數直接運算。</p>
+      <h3>跨年度回測</h3>
+      <p>每次只用較早入學年度訓練，再以後一屆驗證。下表是歷史回測結果。</p>
+      <table aria-label="跨年度回測結果">
+        <thead><tr><th scope="col">驗證年度</th><th scope="col">人數</th><th scope="col">實際通過</th><th scope="col">平均估計</th><th scope="col">AUC</th></tr></thead>
+        <tbody id="validation-body"></tbody>
+      </table>
+      <p id="quality-summary"></p>
+      <p>資料來源為《食品科技系_PCA分析資料.xlsx》的「逐生分析」分頁，依原分析的英檢分組與五科資料品質條件篩選。</p>
+    </div>
+  </details>
+  <p class="footer">試用版 · 成績在本機瀏覽器試算，網頁中只有彙整統計與模型參數。</p>
+  <noscript><p class="error">請啟用瀏覽器的 JavaScript 以進行試算。</p></noscript>
+</main>
+
+<script id="model-data" type="application/json">{"center":[46.623655913978496,31.9502688172043,32.56989247311828,42.56182795698925,44.215053763440864],"scale":[10.332029725431312,12.84431226086547,11.150869438557237,11.002086551492415,14.617598365886128],"weights":[0.405280545624855,1.0093321951881054,-0.25838256557894307,0.33963955652764266,0.4114299977404608],"intercept":-1.5016239667266038,"min":[20.0,12.0,8.0,18.0,0.0],"max":[78.0,75.75,72.0,76.0,78.0],"n":186,"nPass":47,"heldOut":[{"year":113,"n":41,"actual":0.2926829268292683,"predicted":0.40254738593992834,"auc":0.8706896551724138,"brier":0.144095492677889,"baselineBrier":0.20717114499295922},{"year":114,"n":38,"actual":0.13157894736842105,"predicted":0.2806225678275147,"auc":0.8363636363636364,"brier":0.13340496344795397,"baselineBrier":0.1374322402060666}],"validation":{"n":79,"actual":0.21518987341772153,"predicted":0.3439000050757293,"auc":0.8586337760910816,"brier":0.13895321279513548,"baselineBrier":0.17362584901951728},"examples":[48,45,35,50,50]}</script>
+<script>
+"use strict";
+const model = JSON.parse(document.getElementById("model-data").textContent);
+const form = document.getElementById("grade-form");
+const fields = [...form.querySelectorAll('input[type="number"]')];
+const issue = document.getElementById("input-error");
+const result = document.getElementById("result-value");
+const fill = document.getElementById("result-fill");
+const rangeNote = document.getElementById("range-note");
+const methods = document.getElementById("methods");
+const percent = (value) => (100 * value).toFixed(1) + "%";
+const fieldName = (field) => field.labels[0].textContent;
+const crossYear = model.validation;
+const baseline = model.nPass / model.n;
+
+document.getElementById("base-marker").style.left = percent(baseline);
+document.getElementById("reference").textContent =
+  "參照組實際通過比例 " + percent(baseline) + "（" + model.nPass + "／" + model.n + " 位，對應刻度深線）";
+document.getElementById("scope").textContent =
+  "近兩屆回測平均估計 " + percent(crossYear.predicted) + "，實際通過 " + percent(crossYear.actual) + "。試算值可能偏高，供輔導參考。";
+for (const part of [...model.heldOut, { year: "113–114 合計", ...crossYear }]) {
+  const row = document.getElementById("validation-body").insertRow();
+  const year = document.createElement("th");
+  year.scope = "row";
+  year.textContent = part.year;
+  row.append(year);
+  for (const value of [part.n, percent(part.actual), percent(part.predicted), part.auc.toFixed(3)]) {
+    row.insertCell().textContent = value;
+  }
+}
+document.getElementById("quality-summary").textContent =
+  "AUC 衡量模型區分有／無通過紀錄的能力。合計 Brier 分數為 " + crossYear.brier.toFixed(3) +
+  "。若一律使用較早屆的通過比例，分數為 " + crossYear.baselineBrier.toFixed(3) +
+  "。Brier 分數越低，機率估計的整體誤差越小。";
+
+function clearOutput() {
+  result.textContent = "—";
+  result.setAttribute("aria-label", "尚未試算");
+  fill.style.width = "0%";
+  rangeNote.textContent = "";
+  rangeNote.hidden = true;
+}
+
+function clearErrors() {
+  issue.hidden = true;
+  issue.textContent = "";
+  for (const field of fields) {
+    field.removeAttribute("aria-invalid");
+    field.removeAttribute("aria-errormessage");
+  }
+}
+
+form.addEventListener("input", () => {
+  clearOutput();
+  clearErrors();
+});
+
+form.addEventListener("reset", () => {
+  clearOutput();
+  clearErrors();
+});
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  clearErrors();
+  const scores = fields.map((field) => field.valueAsNumber);
+  const invalid = fields.filter((field, index) =>
+    !Number.isFinite(scores[index]) || scores[index] < 0 || scores[index] > 100
+  );
+  if (invalid.length) {
+    clearOutput();
+    for (const field of invalid) {
+      field.setAttribute("aria-invalid", "true");
+      field.setAttribute("aria-errormessage", issue.id);
+    }
+    issue.textContent = "請確認 " + invalid.map(fieldName).join("、") + " 已輸入 0 至 100 分。";
+    issue.hidden = false;
+    invalid[0].focus();
+    return;
+  }
+  const logOdds = scores.reduce((total, score, index) => total +
+    model.weights[index] * (score - model.center[index]) / model.scale[index], model.intercept);
+  const probability = 1 / (1 + Math.exp(-logOdds));
+  result.replaceChildren((100 * probability).toFixed(1));
+  const unit = document.createElement("small");
+  unit.textContent = "%";
+  result.append(unit);
+  result.setAttribute("aria-label", "估計通過可能性 " + percent(probability));
+  fill.style.width = percent(probability);
+  const outside = fields.flatMap((field, index) =>
+    scores[index] < model.min[index] || scores[index] > model.max[index]
+      ? [fieldName(field) + "（" + model.min[index] + "–" + model.max[index] + "）"]
+      : []
+  );
+  rangeNote.hidden = outside.length === 0;
+  rangeNote.textContent = outside.length
+    ? "輸入超出建模樣本的分數範圍：" + outside.join("、") + "。此結果屬外推。"
+    : "";
+});
+
+document.getElementById("example-button").addEventListener("click", () => {
+  fields.forEach((field, index) => { field.value = model.examples[index]; });
+  form.requestSubmit();
+});
+
+document.getElementById("methods-link").addEventListener("click", () => {
+  methods.open = true;
+});
+</script>
+</body>
+</html>
