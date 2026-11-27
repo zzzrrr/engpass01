@@ -73,6 +73,13 @@ h3 { margin-bottom: 7px; font-size: 15px; }
 .marker { position: absolute; width: 2px; height: 20px; top: -5px; background: #334c44; }
 .axis { display: flex; justify-content: space-between; margin-top: 7px; font-size: 12px; color: var(--muted); }
 .reference { margin: 0; font-size: 13px; color: var(--muted); }
+.advisor { margin-top: 18px; padding: 13px 15px; border: 1px solid #c4d9ce; border-radius: 10px; background: #f9fcfa; }
+.advisor h3 { margin-bottom: 7px; color: var(--accent-dark); }
+.advisor p { margin-bottom: 0; color: var(--muted); font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+.advisor p + p { margin-top: 4px; }
+.advisor .advice-range { color: var(--accent-dark); font-size: 12px; font-weight: 700; }
+.advisor .advice-title { color: #162d31; font-weight: 700; }
+.advisor .advice-history { font-size: 12px; }
 .scope { border-top: 1px solid #c4d9ce; margin-top: 20px; padding-top: 13px; line-height: 1.6; font-size: 14px; }
 .scope p { margin-bottom: 6px; }
 .scope p:last-child { margin-bottom: 0; }
@@ -149,8 +156,18 @@ th { font-weight: 700; }
         <div class="axis"><span>0%</span><span>100%</span></div>
       </div>
       <p class="reference" id="reference"></p>
+      <section class="advisor" aria-labelledby="advice-heading">
+        <h3 id="advice-heading">輔導策略建議</h3>
+        <div aria-live="polite" aria-atomic="true">
+          <p class="advice-range" id="advice-range" hidden></p>
+          <p class="advice-title" id="advice-title" hidden></p>
+          <p id="advice-copy">輸入五科成績並試算後，即可查看建議。</p>
+          <p class="advice-history" id="advice-history" hidden></p>
+        </div>
+      </section>
       <div class="scope">
         <p id="scope"></p>
+        <p id="math-note" class="attention" role="status" hidden></p>
         <p id="range-note" class="attention" role="status" hidden></p>
       </div>
     </section>
@@ -162,22 +179,25 @@ th { font-weight: 700; }
       <h3>資料範圍</h3>
       <p>以 111–114 學年度入學、未獲豁免、有核可考試紀錄，且具五科統測原始分數的學生建模。結果定義為歷史名冊中曾有核可通過紀錄。各屆觀察時間可能不同，本估計未設定固定的通過期限。</p>
       <h3>模型</h3>
-      <p>將五科分數標準化，取前兩個主成分（PCA），再以 L2 正則化邏輯斯迴歸估計。網頁以各科成績和模型參數直接運算。</p>
+      <p>將五科分數標準化，取前兩個主成分（PCA），再以 L2 正則化邏輯斯迴歸估計。利用最近一屆可用的跨年度回測結果做保守的機率下修校正，並將校正幅度向零收縮。</p>
+      <h3>數學低分調整</h3>
+      <p id="math-method"></p>
       <h3>跨年度回測</h3>
-      <p>每次只用較早入學年度訓練，再以後一屆驗證。下表是歷史回測結果。</p>
+      <p>每次只用較早入學年度訓練，並用前一屆已完成的回測校正，再以後一屆驗證。新版以 114 學年度回測作為目前的校正依據。</p>
       <table aria-label="跨年度回測結果">
-        <thead><tr><th scope="col">驗證年度</th><th scope="col">人數</th><th scope="col">實際通過</th><th scope="col">平均估計</th><th scope="col">AUC</th></tr></thead>
+        <thead><tr><th scope="col">驗證年度</th><th scope="col">人數</th><th scope="col">實際通過</th><th scope="col">原版平均估計</th><th scope="col">新版平均估計</th><th scope="col">新版 AUC</th></tr></thead>
         <tbody id="validation-body"></tbody>
       </table>
       <p id="quality-summary"></p>
+      <p>策略分層以畫面顯示的估計百分比為準，各區間的通過人數來自 113–114 學年度回測。分層供安排輔導，報考準備度可再用模考確認。</p>
       <p>資料來源為《食品科技系_PCA分析資料.xlsx》的「逐生分析」分頁，依原分析的英檢分組與五科資料品質條件篩選。</p>
     </div>
   </details>
-  <p class="footer">試用版 · 成績在本機瀏覽器試算，網頁中只有彙整統計與模型參數。</p>
+  <p class="footer">校正試用版 · 成績在本機瀏覽器試算，網頁中只有彙整統計與模型參數。</p>
   <noscript><p class="error">請啟用瀏覽器的 JavaScript 以進行試算。</p></noscript>
 </main>
 
-<script id="model-data" type="application/json">{"center":[46.623655913978496,31.9502688172043,32.56989247311828,42.56182795698925,44.215053763440864],"scale":[10.332029725431312,12.84431226086547,11.150869438557237,11.002086551492415,14.617598365886128],"weights":[0.405280545624855,1.0093321951881054,-0.25838256557894307,0.33963955652764266,0.4114299977404608],"intercept":-1.5016239667266038,"min":[20.0,12.0,8.0,18.0,0.0],"max":[78.0,75.75,72.0,76.0,78.0],"n":186,"nPass":47,"heldOut":[{"year":113,"n":41,"actual":0.2926829268292683,"predicted":0.40254738593992834,"auc":0.8706896551724138,"brier":0.144095492677889,"baselineBrier":0.20717114499295922},{"year":114,"n":38,"actual":0.13157894736842105,"predicted":0.2806225678275147,"auc":0.8363636363636364,"brier":0.13340496344795397,"baselineBrier":0.1374322402060666}],"validation":{"n":79,"actual":0.21518987341772153,"predicted":0.3439000050757293,"auc":0.8586337760910816,"brier":0.13895321279513548,"baselineBrier":0.17362584901951728},"examples":[48,45,35,50,50]}</script>
+<script id="model-data" type="application/json">{"center":[46.623655913978496,31.9502688172043,32.763440860215056,42.56182795698925,44.215053763440864],"scale":[10.332029725431312,12.84431226086547,10.79814584787031,11.002086551492415,14.617598365886128],"weights":[0.3977326716556803,1.0374557107080613,-0.24978917824002558,0.3278273177831836,0.4003191335050186],"intercept":-2.345130444062642,"lowMath":{"index":2,"threshold":16,"step":8,"adjustment":-0.42149060630001256,"n":6,"passed":1,"heldOutN":2},"min":[20.0,12.0,8.0,18.0,0.0],"max":[78.0,75.75,72.0,76.0,78.0],"n":186,"nPass":47,"heldOut":[{"year":113,"n":41,"actual":0.2926829268292683,"predicted":0.39896002084333443,"originalPredicted":0.40254738593992834,"auc":0.8649425287356322,"brier":0.14555907252019398,"originalBrier":0.144095492677889,"baselineBrier":0.20717114499295922},{"year":114,"n":38,"actual":0.13157894736842105,"predicted":0.2098394895997955,"originalPredicted":0.2806225678275147,"auc":0.8424242424242424,"brier":0.10855520146464644,"originalBrier":0.13340496344795397,"baselineBrier":0.1374322402060666}],"validation":{"n":79,"actual":0.21518987341772153,"predicted":0.307990651384417,"originalPredicted":0.3439000050757293,"auc":0.8605313092979127,"brier":0.12775974213904456,"originalBrier":0.13895321279513548,"baselineBrier":0.17362584901951728},"adviceBands":[{"lower":0,"upper":20,"n":38,"passed":1},{"lower":20,"upper":40,"n":15,"passed":3},{"lower":40,"upper":60,"n":9,"passed":4},{"lower":60,"upper":101,"n":17,"passed":9}],"examples":[48,45,35,50,50]}</script>
 <script>
 "use strict";
 const model = JSON.parse(document.getElementById("model-data").textContent);
@@ -187,31 +207,69 @@ const issue = document.getElementById("input-error");
 const result = document.getElementById("result-value");
 const fill = document.getElementById("result-fill");
 const rangeNote = document.getElementById("range-note");
+const mathNote = document.getElementById("math-note");
 const methods = document.getElementById("methods");
+const adviceRange = document.getElementById("advice-range");
+const adviceTitle = document.getElementById("advice-title");
+const adviceCopy = document.getElementById("advice-copy");
+const adviceHistory = document.getElementById("advice-history");
+const strategies = [
+  { title: "先找出卡關原因", copy: "用短測驗區分是詞彙、讀題或聽力問題。先補強一項，兩週後用同類題目檢查進步。" },
+  { title: "確立目標檢定", copy: "確認校方採認項目，依學生強項選擇目標檢定。每週練習一組對應題型，記錄錯題與進步幅度。" },
+  { title: "進入限時練習", copy: "先做一回限時模考，依成績與採認門檻的差距補強兩類題目，再用第二回模考確認。" },
+  { title: "安排考前確認", copy: "若兩次限時模考都穩定達到目標，再安排報考，並確認報名與成績登錄流程。" },
+];
 const percent = (value) => (100 * value).toFixed(1) + "%";
 const fieldName = (field) => field.labels[0].textContent;
 const crossYear = model.validation;
+const lowMath = model.lowMath;
 const baseline = model.nPass / model.n;
 
 document.getElementById("base-marker").style.left = percent(baseline);
 document.getElementById("reference").textContent =
   "參照組實際通過比例 " + percent(baseline) + "（" + model.nPass + "／" + model.n + " 位，對應刻度深線）";
 document.getElementById("scope").textContent =
-  "近兩屆回測平均估計 " + percent(crossYear.predicted) + "，實際通過 " + percent(crossYear.actual) + "。試算值可能偏高，供輔導參考。";
+  "近兩屆回測平均估計由 " + percent(crossYear.originalPredicted) + " 降至 " + percent(crossYear.predicted) +
+  "，實際通過 " + percent(crossYear.actual) + "。新版仍可能偏高，供輔導參考。";
+document.getElementById("math-method").textContent =
+  "數學低於 " + lowMath.threshold + " 分時，先以 " + lowMath.threshold + " 分計入主成分，再依低於分界的幅度下修。" +
+  "該區間只有 " + lowMath.n + " 位建模樣本（" + lowMath.passed + " 位曾通過），回測也只有 " + lowMath.heldOutN +
+  " 位，調整幅度仍需更多資料確認。";
 for (const part of [...model.heldOut, { year: "113–114 合計", ...crossYear }]) {
   const row = document.getElementById("validation-body").insertRow();
   const year = document.createElement("th");
   year.scope = "row";
   year.textContent = part.year;
   row.append(year);
-  for (const value of [part.n, percent(part.actual), percent(part.predicted), part.auc.toFixed(3)]) {
+  for (const value of [part.n, percent(part.actual), percent(part.originalPredicted), percent(part.predicted), part.auc.toFixed(3)]) {
     row.insertCell().textContent = value;
   }
 }
 document.getElementById("quality-summary").textContent =
-  "AUC 衡量模型區分有／無通過紀錄的能力。合計 Brier 分數為 " + crossYear.brier.toFixed(3) +
-  "。若一律使用較早屆的通過比例，分數為 " + crossYear.baselineBrier.toFixed(3) +
+  "AUC 衡量模型區分有／無通過紀錄的能力。合計 Brier 分數由 " + crossYear.originalBrier.toFixed(3) +
+  " 降至 " + crossYear.brier.toFixed(3) +
   "。Brier 分數越低，機率估計的整體誤差越小。";
+
+function displayAdvice({ range = "", title = "", copy, history = "" }) {
+  for (const [element, value] of [[adviceRange, range], [adviceTitle, title], [adviceHistory, history]]) {
+    element.textContent = value;
+    element.hidden = value === "";
+  }
+  adviceCopy.textContent = copy;
+}
+
+function showStrategy(displayedPct) {
+  const index = model.adviceBands.findIndex(({ upper }) => displayedPct < upper);
+  const { lower, upper, passed, n } = model.adviceBands[index];
+  let range = lower + "% 至未滿 " + upper + "%";
+  if (lower === 0) range = "低於 " + upper + "%";
+  if (upper > 100) range = lower + "% 以上";
+  displayAdvice({
+    ...strategies[index],
+    range: "估計區間 " + range,
+    history: n ? "此區間的回測實際通過 " + passed + "／" + n + " 位（" + percent(passed / n) + "）" : "",
+  });
+}
 
 function clearOutput() {
   result.textContent = "—";
@@ -219,6 +277,9 @@ function clearOutput() {
   fill.style.width = "0%";
   rangeNote.textContent = "";
   rangeNote.hidden = true;
+  mathNote.textContent = "";
+  mathNote.hidden = true;
+  displayAdvice({ copy: "輸入五科成績並試算後，即可查看建議。" });
 }
 
 function clearErrors() {
@@ -258,15 +319,24 @@ form.addEventListener("submit", (event) => {
     invalid[0].focus();
     return;
   }
-  const logOdds = scores.reduce((total, score, index) => total +
-    model.weights[index] * (score - model.center[index]) / model.scale[index], model.intercept);
+  const mathShortfall = Math.max(0, lowMath.threshold - scores[lowMath.index]);
+  const features = [...scores];
+  features[lowMath.index] += mathShortfall;
+  const logOdds = features.reduce((total, score, index) => total +
+    model.weights[index] * (score - model.center[index]) / model.scale[index], model.intercept)
+    + lowMath.adjustment * mathShortfall / lowMath.step;
   const probability = 1 / (1 + Math.exp(-logOdds));
-  result.replaceChildren((100 * probability).toFixed(1));
+  const displayedPct = (100 * probability).toFixed(1);
+  result.replaceChildren(displayedPct);
   const unit = document.createElement("small");
   unit.textContent = "%";
   result.append(unit);
   result.setAttribute("aria-label", "估計通過可能性 " + percent(probability));
   fill.style.width = percent(probability);
+  mathNote.hidden = mathShortfall === 0;
+  mathNote.textContent = mathShortfall
+    ? "數學低於 " + lowMath.threshold + " 分，已下修估計。這個分數區間的樣本較少，建議搭配英檢模考判讀。"
+    : "";
   const outside = fields.flatMap((field, index) =>
     scores[index] < model.min[index] || scores[index] > model.max[index]
       ? [fieldName(field) + "（" + model.min[index] + "–" + model.max[index] + "）"]
@@ -276,6 +346,11 @@ form.addEventListener("submit", (event) => {
   rangeNote.textContent = outside.length
     ? "輸入超出建模樣本的分數範圍：" + outside.join("、") + "。此結果屬外推。"
     : "";
+  if (outside.length) {
+    displayAdvice({ title: "先核對成績與模考表現", copy: "請確認填入統測原始分數，再用一回目標檢定的模擬試題，判斷應優先補強的項目。" });
+  } else {
+    showStrategy(Number(displayedPct));
+  }
 });
 
 document.getElementById("example-button").addEventListener("click", () => {
